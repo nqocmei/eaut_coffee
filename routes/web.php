@@ -47,9 +47,9 @@ Route::get('/search', [HomeController::class, 'search'])->name('search');
 Route::get('/view-all', [HomeController::class, 'viewAll'])->name('viewAll');
 Route::get('/services', [HomeController::class, 'services'])->name('services');
 //cart
-Route::get('cart', [CartController::class, 'cart'])->name('cart');
-Route::get('add-to-cart/{id}', [CartController::class, 'addProductToCart'])->name('add_to_cart');
-Route::put('update-quantity-cart', [CartController::class, 'updateQuantityCart'])->name('update_quantity_cart');
+Route::get('/cart', [CartController::class, 'cart'])->name('cart');
+Route::get('/add-to-cart/{id}', [CartController::class, 'addProductToCart'])->name('add_to_cart');
+Route::put('/update-quantity-cart', [CartController::class, 'updateQuantityCart'])->name('update_quantity_cart');
 Route::get('/buy-now/{id}', [CartController::class, 'buyNow'])->name('buy_now');
 Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
 Route::post('/order-cod', [CartController::class, 'order'])->name('order-cod');

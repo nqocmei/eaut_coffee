@@ -65,7 +65,7 @@ class CartController extends Controller
             return redirect()->back()->with('message', ['content' => 'Bạn phải đăng nhập để thêm sản phẩm vào giỏ hàng!', 'type' => 'error']);
         }
     }
-    
+
     public function updateQuantityCart(Request $request)
     {
         if (Auth::check()) {
@@ -73,18 +73,30 @@ class CartController extends Controller
             if (!$cart) {
                 return response()->json(['success' => false, 'message' => 'Giỏ hàng không tồn tại!'], 404);
             }
-            $cart->quantity = $request->quantity;
-            $cart->save();
 
-            $totalPrice = $cart->product->promotional_price * $cart->quantity;
-            $totalCart = $this->cartRepository->totalCartByUser(Auth::id());
-            return response()->json([
-                'success' => true,
-                'message' => 'Cập nhật giỏ hàng thành công!',
-                'quantity' => $cart->quantity,
-                'totalPrice' => number_format($totalPrice, 0, ',', '.') . 'đ',
-                'totalCart' => number_format($totalCart, 0, ',', '.') . 'đ',
-            ]);
+            if ($request->quantity > 0) {
+                $cart->quantity = $request->quantity;
+                $cart->save();
+                $totalPrice = $cart->product->promotional_price * $cart->quantity;
+                $totalCart = $this->cartRepository->totalCartByUser(Auth::id());
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Cập nhật giỏ hàng thành công!',
+                    'quantity' => $cart->quantity,
+                    'totalPrice' => number_format($totalPrice, 0, ',', '.') . 'đ',
+                    'totalCart' => number_format($totalCart, 0, ',', '.') . 'đ',
+                ]);
+            } else {
+                $cart->delete();
+                $totalCart = $this->cartRepository->totalCartByUser(Auth::id());
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Xóa sản phẩm khỏi giỏ hàng thành công!',
+                    'totalCart' => number_format($totalCart, 0, ',', '.') . 'đ',
+                ]);
+            }
+
         } else {
             return response()->json(['success' => false, 'message' => 'Bạn phải đăng nhập để sử dụng chức năng này!'], 401);
         }
@@ -107,10 +119,11 @@ class CartController extends Controller
         return redirect('/login');
     }
 
-    public function buyNow (Request $request, $id) {
+    public function buyNow(Request $request, $id)
+    {
         $this->addProductToCart($request, $id);
         return $this->checkout();
-     }
+    }
 
     public function order(Request $request)
     {
