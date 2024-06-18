@@ -34,6 +34,7 @@ const getListNotification = async (path) => {
     if (resp.status === 200) {
         const notificationJson = await resp.json();
         if (notificationJson.data.length === 0) {
+            appendNotifications(notificationJson.data);
             hasMoreData = false;
         } else {
             appendNotifications(notificationJson.data);
@@ -49,49 +50,57 @@ const appendNotifications = (notifications, type = false) => {
     notifications = Array.isArray(notifications)
         ? notifications
         : [notifications];
-    notifications.forEach((notification) => {
-        const isRead = notification.read === 1;
-        const existingNotification = ul.querySelector(`#notification-${notification.id}`);
+    if (notifications.length > 0) {
+        notifications.forEach((notification) => {
+            const isRead = notification.read === 1;
+            const existingNotification = ul.querySelector(
+                `#notification-${notification.id}`
+            );
 
-        if (existingNotification) {
-            existingNotification.remove();
-        }
-        
-        const notificationHTML = `
-            <a data-id="${
-                notification.id
-            }" class="text-reset text-decoration-none d-flex justify-content-start align-items-center notification-items mb-1 ${
-            !isRead ? "read-notification" : ""
-        }" id="notification-${notification.id}">
-                <img src="${
-                    notification.image_path
-                }" alt="" class="img-fluid notification-image object-fit-cover" />
-                <div class="d-flex flex-column align-items-start ms-2">
-                    <p class="m-0 content-wrap">${notification.content}</p>
-                    <p class="mt-1 neutral-300" style="font-size: 12px">
-                        ${new Date(notification.created_at).toLocaleString(
-                            "vi-VN",
-                            { timeZone: "Asia/Ho_Chi_Minh" }
-                        )}
-                    </p>
-                </div>
-            </a>
-        `;
+            if (existingNotification) {
+                existingNotification.remove();
+            }
 
-        if (type) {
-            ul.insertAdjacentHTML("afterbegin", notificationHTML);
-        } else {
-            ul.insertAdjacentHTML("beforeend", notificationHTML);
-        }
+            const notificationHTML = `
+                <a data-id="${
+                    notification.id
+                }" class="text-reset text-decoration-none d-flex justify-content-start align-items-center notification-items mb-1 ${
+                !isRead ? "read-notification" : ""
+            }" id="notification-${notification.id}">
+                    <img src="${
+                        notification.image_path
+                    }" alt="" class="img-fluid notification-image object-fit-cover" />
+                    <div class="d-flex flex-column align-items-start ms-2">
+                        <p class="m-0 content-wrap">${notification.content}</p>
+                        <p class="mt-1 neutral-300" style="font-size: 12px">
+                            ${new Date(notification.created_at).toLocaleString(
+                                "vi-VN",
+                                { timeZone: "Asia/Ho_Chi_Minh" }
+                            )}
+                        </p>
+                    </div>
+                </a>
+            `;
 
-        const notificationElement = ul.querySelector(
-            `#notification-${notification.id}`
-        );
-        notificationElement.addEventListener("click", function (event) {
-            event.preventDefault();
-            readNotification(notification.id, notification.link, isRead);
+            if (type) {
+                ul.insertAdjacentHTML("afterbegin", notificationHTML);
+            } else {
+                ul.insertAdjacentHTML("beforeend", notificationHTML);
+            }
+
+            const notificationElement = ul.querySelector(
+                `#notification-${notification.id}`
+            );
+            notificationElement.addEventListener("click", function (event) {
+                event.preventDefault();
+                readNotification(notification.id, notification.link, isRead);
+            });
         });
-    });
+    } else {
+        ul.innerHTML = `
+        <p class="text-center neutral-300 mt-2">Không có thông báo nào!</p>
+        `;
+    }
 };
 
 const readNotification = async (id, link, isRead) => {

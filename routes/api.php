@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 */
 // api notifications
 Route::group(['prefix' => '/v1', 'namespace' => 'Api'], function () {
+    // middleware
     Route::group(['middleware' => 'auth.jwt'], function () {
         Route::group(['prefix' => '/notifications'], function () {
             Route::post('/add', 'NotificationController@createNotification')->name('api_notification_add');
