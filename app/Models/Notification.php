@@ -17,7 +17,8 @@ class Notification extends Model
         'content',
         'link',
         'read',
-        'image_path'
+        'image_path',
+        'created_at'
     ];
 
     public function user(): BelongsTo

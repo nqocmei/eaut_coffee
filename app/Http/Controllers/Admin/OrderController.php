@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Events\NotificationEvent;
 use App\Http\Controllers\Controller;
 
+use App\Models\Notification;
 use App\Models\Order;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -12,7 +12,6 @@ use Illuminate\Http\Request;
 use App\Repositories\Order\OrderInterface;
 use App\Repositories\Notifications\NotificationInterface;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
@@ -70,15 +69,27 @@ class OrderController extends Controller
         $validatedData = $validator->validated();
         $this->orderRepository->updateOrder($validatedData, $id);
 
-        $this->notificationRepository->createAndPushNotificationForUser(
-            [
-                'user_id' => $order->id_user,
-                'content' => "Quản trị viên vừa cập nhật thông tin đơn hàng {$order->id}!",
-                'link' => route('order.edit', ['id' => $order->id]),
-                'image_path' => 'https://th.bing.com/th/id/OIP.gkWLibtMKZ3vEk2qpPgHOQHaHa?rs=1&pid=ImgDetMain',
-                'read' => 0
-            ]
-        );
+        $notification = Notification::where('user_id', $order->id_user)
+            ->where('link', route('order.edit', ['id' => $order->id]))
+            ->first();
+
+        if (!$notification) {
+            $this->notificationRepository->createAndPushNotificationForUser(
+                [
+                    'user_id' => $order->id_user,
+                    'content' => "Quản trị viên vừa cập nhật thông tin đơn hàng {$order->id}!",
+                    'link' => route('order.edit', ['id' => $order->id]),
+                    'image_path' => 'https://th.bing.com/th/id/OIP.gkWLibtMKZ3vEk2qpPgHOQHaHa?rs=1&pid=ImgDetMain',
+                    'read' => 0
+                ]
+            );
+        } else {
+            $notification->update([
+                'read' => 0,
+                'created_at' => Carbon::now(),
+            ]);
+            $this->notificationRepository->push($order->id_user ,$notification);
+        }
 
         return redirect()->route('orders.index')->with('message', ['content' => 'Cập nhập đơn hàng thành công!', 'type' => 'success']);
     }

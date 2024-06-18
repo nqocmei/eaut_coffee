@@ -51,6 +51,12 @@ const appendNotifications = (notifications, type = false) => {
         : [notifications];
     notifications.forEach((notification) => {
         const isRead = notification.read === 1;
+        const existingNotification = ul.querySelector(`#notification-${notification.id}`);
+
+        if (existingNotification) {
+            existingNotification.remove();
+        }
+        
         const notificationHTML = `
             <a data-id="${
                 notification.id
