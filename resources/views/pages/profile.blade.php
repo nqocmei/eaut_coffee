@@ -11,7 +11,6 @@
                         <p class="mt-1">
                             Đã tham gia: {{ $user->created_at->diffForHumans() }}
                         </p>
-                        <a class="btn btn-outline-dark" href="{{ route('site.order') }}">Quản lý đơn hàng</a>
                     </div>
                     <div class="col-md-8">
                         {{-- switch --}}

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\NotificationEvent;
 use App\Http\Controllers\Controller;
 
 use App\Models\Order;
@@ -9,21 +10,24 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 use App\Repositories\Order\OrderInterface;
+use App\Repositories\Notifications\NotificationInterface;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
 
-    private $OrderRepository;
+    private $orderRepository, $notificationRepository;
 
-    public function __construct(OrderInterface $OrderRepository)
+    public function __construct(OrderInterface $orderRepository, NotificationInterface $notificationRepository)
     {
-        $this->OrderRepository = $OrderRepository;
+        $this->orderRepository = $orderRepository;
+        $this->notificationRepository = $notificationRepository;
     }
 
     public function index()
     {
-        $orders = $this->OrderRepository->allOrder();
+        $orders = $this->orderRepository->allOrder();
         return view('admin.orders.index', ['orders' => $orders]);
     }
 
@@ -64,7 +68,17 @@ class OrderController extends Controller
         }
 
         $validatedData = $validator->validated();
-        $this->OrderRepository->updateOrder($validatedData, $id);
+        $this->orderRepository->updateOrder($validatedData, $id);
+
+        $this->notificationRepository->createAndPushNotificationForUser(
+            [
+                'user_id' => $order->id_user,
+                'content' => "Quản trị viên vừa cập nhật thông tin đơn hàng {$order->id}!",
+                'link' => route('order.edit', ['id' => $order->id]),
+                'image_path' => 'https://th.bing.com/th/id/OIP.gkWLibtMKZ3vEk2qpPgHOQHaHa?rs=1&pid=ImgDetMain',
+                'read' => 0
+            ]
+        );
 
         return redirect()->route('orders.index')->with('message', ['content' => 'Cập nhập đơn hàng thành công!', 'type' => 'success']);
     }

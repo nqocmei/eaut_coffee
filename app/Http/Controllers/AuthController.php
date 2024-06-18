@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Requests\RegisterRequest;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -31,21 +33,34 @@ class AuthController extends Controller
         $user = new User();
         $user->fullname = $request->fullname;
         $user->email = $request->email;
-        $user->password = Hash::make($request->password);//mã hóa mật khẩu 
+        $user->password = Hash::make($request->password);
         $user->id_role = 2; // user normal
         $user->save();
         return back()->with('message', ['content' => 'Đăng kí tài khoản thành công!', 'type' => 'success']);
     }
 
-    public function loginPost(Request $request)
+    public function login(Request $request)
     {
-        $credetials = [
+        $credentials = [
             'email' => $request->email,
-            'password' => $request->password
+            'password' => $request->password,
         ];
 
-        if (Auth::attempt($credetials))  {
-            return redirect('/')->with('message', ['content' => 'Đăng nhập thành công!', 'type' => 'success']);
+        if (Auth::attempt($credentials)) {
+            try {
+                $user = User::find(Auth::id());
+                $sessionLifetime = config('session.lifetime');
+                $token = JWTAuth::fromUser($user, ['exp' => Carbon::now()->addMinutes($sessionLifetime)->timestamp]);
+
+                $user->update([
+                    'api_token' => $token,
+                ]);
+
+                return redirect('/')->with('message', ['content' => 'Đăng nhập thành công!', 'type' => 'success'])
+                    ->with('token', $token);
+            } catch (\Exception $e) {
+                return back()->with('message', ['content' => 'Không thể tạo token', 'type' => 'error']);
+            }
         }
 
         return back()->with('message', ['content' => 'Sai tên tài khoản hoặc mật khẩu!', 'type' => 'error']);

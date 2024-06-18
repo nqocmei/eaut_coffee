@@ -21,6 +21,7 @@ return new class extends Migration {
             $table->string('phone')->nullable();
             $table->integer('id_role')->index('fk_dk');
             $table->string('avatar')->nullable();
+            $table->text('api_token')->nullable();
             $table->timestamps();
         });
     }

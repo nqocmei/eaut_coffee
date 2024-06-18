@@ -28,6 +28,9 @@ use App\Repositories\Banner\BannerInterface;
 use App\Repositories\Configuration\ConfigurationInterface;
 use App\Repositories\Configuration\ConfigurationRepository;
 
+use App\Repositories\Notifications\NotificationInterface;
+use App\Repositories\Notifications\NotificationRepository;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -43,6 +46,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(CartInterface::class, CartRepository::class);
         $this->app->bind(UserInterface::class, UserRepository::class);
         $this->app->bind(ConfigurationInterface::class, ConfigurationRepository::class);
+        $this->app->bind(NotificationInterface::class, NotificationRepository::class);
         }
 
     /**

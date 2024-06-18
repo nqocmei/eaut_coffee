@@ -94,7 +94,6 @@
 <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', function () {
         function updateQuantity(id, quantity) {
-            const csrfToken = '{{ csrf_token() }}';
 
             fetch("{{ route('update_quantity_cart') }}", {
                 method: 'PUT',

@@ -5,3 +5,45 @@
 .nav-item.nav-link-item .nav-link.active {
     color: var(--mainColor) !important;
 }
+
+.icon-dropdown-menu {
+    width: 20px;
+    height: 20px;
+}
+
+/* notification */
+
+.notification-image {
+    width: 60px;
+    height: 60px;
+}
+
+@media only screen and (max-width: 600px) {
+    .notifications-dropdown .dropdown-menu {
+        width: 343px !important;
+    }
+
+    .notifications-dropdown .dropdown-menu[data-bs-popper] {
+        left: -50% !important;
+    }
+}
+
+.notifications-dropdown .dropdown-menu {
+    width: 400px;
+    max-height: 350px;
+    overflow: auto;
+}
+
+.notifications-dropdown .dropdown-menu[data-bs-popper] {
+    top: calc(100% + 10px);
+    left: -100%;
+    transform: translateX(-50%);
+}
+
+.read-notification {
+    background-color: aliceblue!important;
+}
+
+.notification-items {
+    cursor: pointer;
+}

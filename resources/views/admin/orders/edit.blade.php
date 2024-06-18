@@ -52,7 +52,7 @@
         <div class="mb-3">
             <label for="delivery_address" class="form-label">Địa chỉ giao hàng</label>
             <input type="text" class="form-control" id="delivery_address" name="delivery_address"
-                value="{{ $order->delivery_address }}" required>
+                value="{{ $order->delivery_address }}" disabled>
         </div>
 
         <div class="mb-3">
