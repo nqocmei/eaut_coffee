@@ -79,7 +79,7 @@
 
     <ul class="pagination">
         <li class="page-item @if ($orders->currentPage() === 1) disabled @endif">
-            <a class="page-link" href="{{ $orders->previousPageUrl() }}">Previous</a>
+            <a class="page-link" href="{{ $orders->previousPageUrl() }}">Trước</a>
         </li>
         @for ($i = 1; $i <= $orders->lastPage(); $i++)
             <li class="page-item @if ($orders->currentPage() === $i) active @endif">
@@ -87,7 +87,7 @@
             </li>
         @endfor
         <li class="page-item @if ($orders->currentPage() === $orders->lastPage()) disabled @endif">
-            <a class="page-link" href="{{ $orders->nextPageUrl() }}">Next</a>
+            <a class="page-link" href="{{ $orders->nextPageUrl() }}">Sau</a>
         </li>
     </ul>
 @endsection

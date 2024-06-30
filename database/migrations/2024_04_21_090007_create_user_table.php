@@ -19,7 +19,7 @@ return new class extends Migration {
             $table->string('password', 100);
             $table->string('address')->nullable();
             $table->string('phone')->nullable();
-            $table->integer('id_role')->index('fk_dk');
+            $table->unsignedBigInteger('id_role')->index();
             $table->string('avatar')->nullable();
             $table->text('api_token')->nullable();
             $table->timestamps();

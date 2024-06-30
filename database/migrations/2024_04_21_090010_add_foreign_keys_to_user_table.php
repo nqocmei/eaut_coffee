@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -14,7 +13,12 @@ return new class extends Migration
     public function up()
     {
         Schema::table('user', function (Blueprint $table) {
-            $table->foreign(['id_role'], 'fk_dk')->references(['id_role'])->on('role')->onUpdate('restrict')->onDelete('restrict');
+            // Thiết lập khóa ngoại
+            $table->foreign('id_role', 'fk_dk')
+                  ->references('id')
+                  ->on('role')
+                  ->onUpdate('restrict')
+                  ->onDelete('restrict');
         });
     }
 

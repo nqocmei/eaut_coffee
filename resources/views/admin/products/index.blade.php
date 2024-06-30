@@ -12,7 +12,7 @@
 
     <div class="d-flex justify-content-between">
         <a class="btn btn-primary" href="{{ route('product.create') }}">Thêm sản phẩm</a>
-        <form action="{{ route('adminSearch') }}" method="GET" class="d-flex">
+        <form action="{{ route('search.product') }}" method="GET" class="d-flex">
             <input type="text" value="" placeholder="Nhập để tìm kiếm..." name="keyword" class="form-control"
                 style="width: unset;" required>
             <button class="btn btn-primary" type="submit">
@@ -65,7 +65,7 @@
     <nav aria-label="Page navigation example">
         <ul class="pagination">
             <li class="page-item @if ($products->currentPage() === 1) disabled @endif">
-                <a class="page-link" href="{{ $products->previousPageUrl() }}">Previous</a>
+                <a class="page-link" href="{{ $products->previousPageUrl() }}">Trước</a>
             </li>
             @for ($i = 1; $i <= $products->lastPage(); $i++)
                 <li class="page-item @if ($products->currentPage() === $i) active @endif">
@@ -73,7 +73,7 @@
                 </li>
             @endfor
             <li class="page-item @if ($products->currentPage() === $products->lastPage()) disabled @endif">
-                <a class="page-link" href="{{ $products->nextPageUrl() }}">Next</a>
+                <a class="page-link" href="{{ $products->nextPageUrl() }}">Sau</a>
             </li>
         </ul>
     </nav>

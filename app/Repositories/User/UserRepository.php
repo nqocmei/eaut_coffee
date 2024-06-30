@@ -18,9 +18,9 @@ class UserRepository implements UserInterface
         $user->fullname = $request->fullname;
         $user->address = $request->address;
         $user->phone = $request->phone;
-        
+
         if ($request->hasFile('avatar')) {
-            if(!empty($user->avatar)){
+            if (!empty($user->avatar)) {
                 $oldImagePath = public_path($user->avatar);
                 if (file_exists($oldImagePath)) {
                     unlink($oldImagePath);
@@ -33,4 +33,22 @@ class UserRepository implements UserInterface
 
         $user->save();
     }
+
+    public function getAllUser()
+    {
+        return User::orderBy('created_at', 'desc')->paginate(10);
+    }
+
+    public function searchUser($data)
+    {
+        $searchKeyword = $data->input('keyword');
+
+        return User::where(function ($query) use ($searchKeyword) {
+            $query->where('fullname', 'like', '%' . $searchKeyword . '%')
+                ->orWhere('email', 'like', '%' . $searchKeyword . '%')
+                ->orWhere('phone', 'like', '%' . $searchKeyword . '%')
+                ->orWhere('address', 'like', '%' . $searchKeyword . '%');
+        })->paginate(5);
+    }
+
 }

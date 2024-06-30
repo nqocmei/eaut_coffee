@@ -98,7 +98,7 @@ Route::prefix('/')->middleware('admin.login')->group(function () {
         Route::prefix('/product')->group(function () {
             Route::get('/', [ProductController::class, 'index'])->name('product.index');
             Route::post('/', [ProductController::class, 'store'])->name('product.store');
-            Route::get('/search', [AdminController::class, 'search'])->name('adminSearch');
+            Route::get('/search', [AdminController::class, 'search'])->name('search.product');
             Route::get('/create', [ProductController::class, 'create'])->name('product.create');
             Route::get('/edit/{product}', [ProductController::class, 'edit'])->name('product.edit');
             Route::put('/update/{product}', [ProductController::class, 'update'])->name('product.update');
@@ -124,6 +124,11 @@ Route::prefix('/')->middleware('admin.login')->group(function () {
             Route::get('/edit/{banner}', [BannerController::class, 'edit'])->name('banner.edit');
             Route::put('/update/{bannerId}', [BannerController::class, 'update'])->name('banner.update');
             Route::delete('/{banner}/destroy', [BannerController::class, 'destroy'])->name('banner.destroy');
+        });
+
+        Route::prefix('/users')->group(function () {
+            Route::get('/', [UserController::class, 'getAllUser'])->name('users.get-all');
+            Route::get('/search', [UserController::class, 'searchUsers'])->name('users.search');
         });
 
         Route::prefix('/settings')->group(function () {

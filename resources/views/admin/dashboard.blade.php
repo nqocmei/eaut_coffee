@@ -107,82 +107,11 @@
                 </div>
             </div>
         </div>
-
         <div class="row">
-            <div class="col-12 col-lg-8 col-xxl-9 d-flex">
-                <div class="card flex-fill">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">No data</h5>
-                    </div>
-                    {{-- custom here --}}
-                </div>
-            </div>
-
-            <div class="col-12 col-lg-4 col-xxl-3 d-flex">
-                <div class="card flex-fill w-100">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Monthly Sales</h5>
-                    </div>
-                    <div class="card-body d-flex w-100">
-                        <div class="align-self-center chart chart-lg">
-                            <canvas id="chartjs-dashboard-bar"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-12 col-md-6 col-xxl-3 d-flex order-2 order-xxl-3">
-                <div class="card flex-fill w-100">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Browser Usage</h5>
-                    </div>
-                    <div class="card-body d-flex">
-                        <div class="align-self-center w-100">
-                            <div class="py-3">
-                                <div class="chart chart-xs">
-                                    <canvas id="chartjs-dashboard-pie"></canvas>
-                                </div>
-                            </div>
-
-                            <table class="table mb-0">
-                                <tbody>
-                                    <tr>
-                                        <td>Chrome</td>
-                                        <td class="text-end">4306</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Firefox</td>
-                                        <td class="text-end">3801</td>
-                                    </tr>
-                                    <tr>
-                                        <td>IE</td>
-                                        <td class="text-end">1689</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-12 col-xxl-6 d-flex order-3 order-xxl-2">
-                <div class="card flex-fill w-100">
-                    <div class="card-header">
-                        <h5 class="card-title">Line Chart</h5>
-                        <h6 class="card-subtitle text-muted">A line chart is a way of plotting data points on a line.</h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="chart">
-                            <canvas id="chartjs-line"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="col-12 col-md-6 col-xxl-3 d-flex order-1 order-xxl-1">
                 <div class="card flex-fill">
                     <div class="card-header">
-                        <h5 class="card-title mb-0">Calendar</h5>
+                        <h5 class="card-title mb-0">Lịch</h5>
                     </div>
                     <div class="card-body d-flex">
                         <div class="align-self-center w-100">
@@ -196,4 +125,23 @@
         </div>
 
     </div>
+@endsection
+@section('js')
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var date = new Date(Date.now() - 5 * 24 * 60 * 60 * 1000);
+            var defaultDate =
+                date.getUTCFullYear() +
+                "-" +
+                (date.getUTCMonth() + 1) +
+                "-" +
+                date.getUTCDate();
+            document.getElementById("datetimepicker-dashboard").flatpickr({
+                inline: true,
+                prevArrow: '<span title="Previous month">&laquo;</span>',
+                nextArrow: '<span title="Next month">&raquo;</span>',
+                defaultDate: defaultDate,
+            });
+        });
+    </script>
 @endsection
