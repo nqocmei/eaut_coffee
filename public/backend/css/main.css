@@ -1,0 +1,27 @@
+@media only screen and (max-width: 600px) {
+    .notifications-dropdown .dropdown-menu {
+        width: 343px !important;
+    }
+
+    .notifications-dropdown .dropdown-menu[data-bs-popper] {
+        left: 5% !important;
+    }
+}
+
+.notifications-dropdown .dropdown-menu {
+    width: 400px;
+    max-height: 350px;
+    overflow: auto;
+}
+
+.notifications-dropdown .dropdown-menu[data-bs-popper] {
+    top: calc(100% + 10px);
+    right: 0;
+    transform: translateX(-50%);
+}
+
+.notification-image {
+    width: 60px;
+    height: 60px;
+}
+

@@ -51,4 +51,7 @@ class UserRepository implements UserInterface
         })->paginate(5);
     }
 
+    public function getAllAdmin() {
+        return User::where('id_role', 1)->get();
+    }
 }

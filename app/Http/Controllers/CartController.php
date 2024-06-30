@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Repositories\Cart\CartInterface;
+use App\Repositories\Notifications\NotificationInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -15,11 +16,12 @@ use App\Models\OrderDetail;
 
 class CartController extends Controller
 {
-    private $cartRepository;
+    private $cartRepository, $notificationRepository;
 
-    public function __construct(CartInterface $cartRepository)
+    public function __construct(CartInterface $cartRepository, NotificationInterface $notificationRepository)
     {
         $this->cartRepository = $cartRepository;
+        $this->notificationRepository = $notificationRepository;
     }
     public function index()
     {
@@ -167,6 +169,14 @@ class CartController extends Controller
         foreach ($carts as $cart) {
             $cart->delete();
         }
+
+        $notificationData = [
+            'content' => $request->recipient . ' vừa đặt hàng!',
+            'link' => route('orders.edit', ['orders' => $newOrder->id]),
+            'image_path' => 'https://img.upanh.tv/2024/06/30/OIP.jpg',
+        ];
+
+        $this->notificationRepository->createAndPushNotificationForAdmin($notificationData);
 
         return view('pages.orderSuccess');
     }

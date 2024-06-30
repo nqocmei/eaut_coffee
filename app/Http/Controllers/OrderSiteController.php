@@ -2,19 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notification;
+use App\Repositories\Notifications\NotificationInterface;
 use App\Repositories\Order\OrderInterface;
 
+use App\Repositories\User\UserInterface;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class OrderSiteController extends Controller
 {
 
-    private $OrderRepository;
+    private $OrderRepository, $notificationRepository, $userRepository;
 
-    public function __construct(OrderInterface $OrderRepository)
+    public function __construct(OrderInterface $OrderRepository, NotificationInterface $notificationRepository, UserInterface $userRepository)
     {
         $this->OrderRepository = $OrderRepository;
+        $this->notificationRepository = $notificationRepository;
+        $this->userRepository = $userRepository;
     }
 
     public function index()
@@ -66,6 +72,29 @@ class OrderSiteController extends Controller
 
         $order->save();
 
+        $notification = Notification::where('link', route('orders.edit', ['orders' => $order->id]))
+            ->first();
+
+        if (!$notification) {
+            $this->notificationRepository->createAndPushNotificationForAdmin(
+                [
+                    'content' => "{$request->recipient} vừa cập nhật thông tin đơn hàng {$order->id}!",
+                    'link' => route('orders.edit', ['orders' => $order->id]),
+                    'image_path' => 'https://th.bing.com/th/id/OIP.gkWLibtMKZ3vEk2qpPgHOQHaHa?rs=1&pid=ImgDetMain',
+                ]
+            );
+        } else {
+            $notification->update([
+                'read' => 0,
+                'created_at' => Carbon::now(),
+            ]);
+            $admins = $this->userRepository->getAllAdmin();
+
+            foreach ($admins as $admin) {
+                $notification->user_id = $admin->id;
+                $this->notificationRepository->push($admin->id, $notification);
+            }
+        }
         return redirect()->route('order.edit', ['id' => $request->id])->with('message', ['content' => 'Cập nhật thông tin thành công!', 'type' => 'success']);
     }
 

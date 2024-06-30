@@ -5,14 +5,17 @@ namespace App\Repositories\Notifications;
 use App\Events\NotificationEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Notification;
+use App\Repositories\User\UserInterface;
 
 class NotificationRepository extends Controller implements NotificationInterface
 {
     private Notification $notification;
+    private $userRepository;
 
-    public function __construct(Notification $notification)
+    public function __construct(Notification $notification, UserInterface $userRepository)
     {
         $this->notification = $notification;
+        $this->userRepository = $userRepository;
     }
 
     public function get($userId)
@@ -67,7 +70,19 @@ class NotificationRepository extends Controller implements NotificationInterface
         }
     }
 
-    public function countUnreadNotifications($user_id) {
+    public function countUnreadNotifications($user_id)
+    {
         return $this->notification::where('user_id', $user_id)->where('read', 0)->count();
+    }
+
+    public function createAndPushNotificationForAdmin($notificationData)
+    {
+        $admins = $this->userRepository->getAllAdmin();
+
+        foreach ($admins as $admin) {
+            $notificationData['user_id'] = $admin->id;
+            $notificationData['read'] = 0;
+            $this->createAndPushNotificationForUser($notificationData);
+        }
     }
 }

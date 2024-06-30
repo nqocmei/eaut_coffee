@@ -21,4 +21,6 @@ interface NotificationInterface
     public function createAndPushNotificationForUsers($user_ids, $notificationData);
 
     public function countUnreadNotifications($user_id);
+
+    public function createAndPushNotificationForAdmin($notificationData);
 }
